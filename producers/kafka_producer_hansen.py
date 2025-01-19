@@ -65,11 +65,11 @@ def generate_messages(producer, topic, interval_secs):
 
     """
     string_list: list = [
-        "I love Python!",
-        "Kafka is awesome.",
-        "Streaming data is fun.",
-        "This is a buzz message.",
-        "Have a great day!",
+        "The flavor is bland.",
+        "It was easy to prepare.",
+        "The recipe was delicious.",
+        "It taught me something new.",
+        "It used an ingredient I had not tried before.",
     ]
     try:
         while True:
