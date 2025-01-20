@@ -49,7 +49,7 @@ def get_kafka_consumer_group_id() -> int:
 # #####################################
 
 
-def process_message(message: str) -> None:
+def process_message(message) -> None:
     """
     Process a single message.
 
@@ -60,9 +60,10 @@ def process_message(message: str) -> None:
     Args:
         message (str): The message to process.
     """
-    #logger.info(f"Processing message: {message}")
+    logger.info(f"Processing message: {message}")
 
-     with open(message, "r") as file:
+
+    with open(message, "r") as file:
         # Move to the end of the file
         file.seek(0, os.SEEK_END)
         print("Consumer is ready and waiting for a new log message...")
@@ -87,10 +88,10 @@ def process_message(message: str) -> None:
             print(f"Consumed log message: {message}")
 
             # monitor and alert on special conditions
-            #ADJECTIVES: list = ["busy", "majestic", "beautiful", "quiet", "refreshing"]
-            if "The flavor was bland." in message:
-                print(f"ALERT: Review Recipe \n{message}")
-                logger.warning(f"ALERT: This recipe needs to be reviewed for possible improvement \n{message}")   
+            #ALERT: str = ["The flavor is bland."]
+            #if "The flavor is bland." in message:
+            #    print(f"ALERT: Review Recipe \n{message}")
+            #    logger.warning(f"ALERT: This recipe needs to be reviewed \n{message}")   
 
 #####################################
 # Define main function for this module
