@@ -10,6 +10,7 @@ Consume messages from a Kafka topic and process them.
 
 # Import packages from Python Standard Library
 import os
+import time
 
 # Import external packages
 from dotenv import load_dotenv
@@ -59,7 +60,8 @@ def process_message(message: str) -> None:
     Args:
         message (str): The message to process.
     """
-    logger.info(f"Processing message: {message}")
+    #logger.info(f"Processing message: {message}")
+
 
 
 #####################################
@@ -102,6 +104,22 @@ def main() -> None:
 
     logger.info(f"END consumer for topic '{topic}' and group '{group_id}'.")
 
+    from prometheus_client import start_http_server, Counter, Histogram
+
+    # Define metrics
+    MESSAGE_COUNT = Counter('kafka_consumer_message_count', 'Number of messages consumed')
+    PROCESSING_TIME = Histogram('kafka_consumer_processing_seconds', 'Time spent processing each message')
+
+    # Start Prometheus server to expose metrics
+    start_http_server(8000)
+
+    for message in topic:
+        start_time = time.time()
+        print(f"Received message: {message.value}")
+
+    # Update metrics
+    MESSAGE_COUNT.inc()
+    PROCESSING_TIME.observe(time.time() - start_time)
 
 #####################################
 # Conditional Execution
