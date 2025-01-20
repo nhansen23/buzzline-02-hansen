@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 
 # Import functions from local modules
 from utils.utils_consumer import create_kafka_consumer
-from utils.utils_logger import logger
+from utils.utils_logger import logger, get_log_file_path
 
 #####################################
 # Load Environment Variables
@@ -62,7 +62,35 @@ def process_message(message: str) -> None:
     """
     #logger.info(f"Processing message: {message}")
 
+     with open(message, "r") as file:
+        # Move to the end of the file
+        file.seek(0, os.SEEK_END)
+        print("Consumer is ready and waiting for a new log message...")
 
+        # Use while True loop so the consumer keeps running forever
+        while True:
+
+            # Read the next line of the file
+            line = file.readline()
+
+            # If the line is empty, wait for a new log entry
+            if not line:
+                # Wait a second for a new log entry
+                delay_seconds = 1
+                time.sleep(delay_seconds)
+                # Keep checking for new log entries
+                continue
+
+            # Need to review a recipe
+            # Remove any leading/trailing white space and log the message
+            message = line.strip()
+            print(f"Consumed log message: {message}")
+
+            # monitor and alert on special conditions
+            #ADJECTIVES: list = ["busy", "majestic", "beautiful", "quiet", "refreshing"]
+            if "The flavor was bland." in message:
+                print(f"ALERT: Review Recipe \n{message}")
+                logger.warning(f"ALERT: This recipe needs to be reviewed for possible improvement \n{message}")   
 
 #####################################
 # Define main function for this module
@@ -104,22 +132,7 @@ def main() -> None:
 
     logger.info(f"END consumer for topic '{topic}' and group '{group_id}'.")
 
-    from prometheus_client import start_http_server, Counter, Histogram
 
-    # Define metrics
-    MESSAGE_COUNT = Counter('kafka_consumer_message_count', 'Number of messages consumed')
-    PROCESSING_TIME = Histogram('kafka_consumer_processing_seconds', 'Time spent processing each message')
-
-    # Start Prometheus server to expose metrics
-    start_http_server(8000)
-
-    for message in topic:
-        start_time = time.time()
-        print(f"Received message: {message.value}")
-
-    # Update metrics
-    MESSAGE_COUNT.inc()
-    PROCESSING_TIME.observe(time.time() - start_time)
 
 #####################################
 # Conditional Execution
