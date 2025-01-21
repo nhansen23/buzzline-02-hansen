@@ -10,14 +10,14 @@ Consume messages from a Kafka topic and process them.
 
 # Import packages from Python Standard Library
 import os
-import time
+from collections import Counter
 
 # Import external packages
 from dotenv import load_dotenv
 
 # Import functions from local modules
 from utils.utils_consumer import create_kafka_consumer
-from utils.utils_logger import logger, get_log_file_path
+from utils.utils_logger import logger
 
 #####################################
 # Load Environment Variables
@@ -48,8 +48,11 @@ def get_kafka_consumer_group_id() -> int:
 # Define a function to process a single message
 # #####################################
 
+message_count = 0 
+keyword_counter = Counter() 
+alert_keywords = ["The flavor is bland"] # Define your alert keywords
 
-def process_message(message) -> None:
+def process_message(message: str) -> None:
     """
     Process a single message.
 
@@ -60,38 +63,21 @@ def process_message(message) -> None:
     Args:
         message (str): The message to process.
     """
-    logger.info(f"Processing message: {message}")
+    global message_count, keyword_counter
+    logger.info(f"Processing message: {message}") 
+    message_count += 1 
+    
+    for keyword in alert_keywords: 
+        if keyword in message: 
+            logger.warning(f"ALERT: Keyword '{keyword}' found in message: {message}")
+            logger.warning(f"Recipe needs to be reviewed.")  
+            keyword_counter[keyword] += 1 
+            # Add additional alerting mechanisms here (e.g., send an email or notification) 
 
-
-    with open(message, "r") as file:
-        # Move to the end of the file
-        file.seek(0, os.SEEK_END)
-        print("Consumer is ready and waiting for a new log message...")
-
-        # Use while True loop so the consumer keeps running forever
-        while True:
-
-            # Read the next line of the file
-            line = file.readline()
-
-            # If the line is empty, wait for a new log entry
-            if not line:
-                # Wait a second for a new log entry
-                delay_seconds = 1
-                time.sleep(delay_seconds)
-                # Keep checking for new log entries
-                continue
-
-            # Need to review a recipe
-            # Remove any leading/trailing white space and log the message
-            message = line.strip()
-            print(f"Consumed log message: {message}")
-
-            # monitor and alert on special conditions
-            #ALERT: str = ["The flavor is bland."]
-            #if "The flavor is bland." in message:
-            #    print(f"ALERT: Review Recipe \n{message}")
-            #    logger.warning(f"ALERT: This recipe needs to be reviewed \n{message}")   
+def print_analytics() -> None: 
+    """Print analytics summary.""" 
+    logger.info(f"Total messages processed: {message_count}") 
+    logger.info(f"Keyword occurrences: {keyword_counter}")
 
 #####################################
 # Define main function for this module
@@ -132,7 +118,6 @@ def main() -> None:
         logger.info(f"Kafka consumer for topic '{topic}' closed.")
 
     logger.info(f"END consumer for topic '{topic}' and group '{group_id}'.")
-
 
 
 #####################################

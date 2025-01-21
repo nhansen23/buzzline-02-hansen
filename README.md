@@ -15,32 +15,21 @@ We write producers that send data to topics and consumers that read from topics.
 
 ## Task 1. Install and Start Kafka (using WSL if Windows)
 
-Before starting, ensure you have completed the setup tasks in <https://github.com/denisecase/buzzline-01-case> first. 
 Python 3.11 is required. 
-
-In this task, we will download, install, configure, and start a local Kafka service. 
 
 1. Install Windows Subsystem for Linux (Windows machines only)
 2. Install Kafka Streaming Platform
 3. Start the Zookeeper service (leave the terminal open).
 4. Start the Kafka service (leave the terminal open).
 
-For detailed instructions, see:
-
-- [SETUP-KAFKA](docs/SETUP-KAFKA.md) (all machines)
-
-
 ## Task 2. Copy This Example Project & Rename
 
 Copy/fork this project into your GitHub account
 and create your own version of this project to run and experiment with. 
-Name it `buzzline-02-yourname` where yourname is something unique to you.
-Follow the instructions in [FORK-THIS-REPO.md](https://github.com/denisecase/buzzline-01-case/blob/main/docs/FORK-THIS-REPO.md)).
-    
+Name it `buzzline-02-yourname` where yourname is something unique to you.    
 
 ## Task 3. Manage Local Project Virtual Environment
 
-Follow the instructions in [MANAGE-VENV.md](https://github.com/denisecase/buzzline-01-case/blob/main/docs/MANAGE-VENV.md) to:
 1. Create your .venv
 2. Activate .venv
 3. Install the required dependencies using requirements.txt.
